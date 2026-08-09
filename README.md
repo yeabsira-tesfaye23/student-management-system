@@ -72,7 +72,7 @@ npm install
 npm start
 ```
 
-The API server will run at `http://localhost:3000` (adjust to match your actual port).
+The API server will run at `http://localhost:3000` 
 
 **2. Start the frontend (React app):**
 
