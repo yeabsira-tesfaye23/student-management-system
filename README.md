@@ -14,7 +14,7 @@ Students can be added, edited, deleted, and searched — with all data persisted
 - ✏️ **Edit Student** — Update existing student information in place
 - 🗑️ **Delete Student** — Remove records from the list
 - 🔍 **Search Students** — Quickly filter/find students by name or other fields
-- 💾 **Data Persistence** — Records are saved using the browser's Local Storage, so data isn't lost on refresh
+- 💾 **Data Persistence** — Records are stored and retrieved through a Node.js/Express REST API on the backend
 - ⚡ **Modern JavaScript (ES6+)** — Written using modern syntax (arrow functions, destructuring, spread/rest operators, modules, etc.)
 
 ## 🛠️ Tech Stack
@@ -22,26 +22,31 @@ Students can be added, edited, deleted, and searched — with all data persisted
 | Category   | Technology                          |
 |------------|--------------------------------------|
 | Frontend   | React (Components, JSX, Hooks - `useState`) |
+| Backend    | Node.js, Express.js (REST API)      |
 | Language   | JavaScript (ES6+)                   |
-| Persistence| Local Storage (Web Storage API)     |
-| Concepts Applied | REST API design principles, Node.js/Express basics |
+| Architecture | Client-server, with the React frontend consuming a Node/Express REST API |
 
 ## 📂 Project Structure
 
 ```
 student-management-system/
-├── public/
-│   └── index.html
-├── src/
-│   ├── components/       # Reusable UI components (StudentForm, StudentList, etc.)
-│   ├── App.js             # Root component
-│   ├── index.js           # Entry point
-│   └── styles/             # CSS / styling files
-├── package.json
+├── backend/
+│   ├── routes/            # REST API routes (students CRUD endpoints)
+│   ├── controllers/       # Request handlers / business logic
+│   ├── server.js          # Express app entry point
+│   └── package.json
+├── frontend/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/    # Reusable UI components (StudentForm, StudentList, etc.)
+│   │   ├── App.js         # Root component
+│   │   └── index.js       # Entry point
+│   └── package.json
 └── README.md
 ```
 
-*(Adjust this structure to match your actual folder layout.)*
+*(Adjust this to match your exact folder/file names inside `backend/` and `frontend/`.)*
 
 ## 🚀 Getting Started
 
@@ -57,23 +62,39 @@ git clone https://github.com/yeabsira-tesfaye23/student-management-system.git
 
 # Navigate into the project folder
 cd student-management-system
+```
 
-# Install dependencies
+**1. Start the backend (REST API):**
+
+```bash
+cd backend
 npm install
-
-# Start the development server
 npm start
 ```
 
-The app will run locally at `http://localhost:3000`.
+The API server will run at `http://localhost:3000` (adjust to match your actual port).
+
+**2. Start the frontend (React app):**
+
+Open a new terminal window/tab, then:
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+The app will run locally at `http://localhost:5173`.
+
+> ⚠️ Both the backend and frontend need to be running at the same time for the app to work — the frontend fetches data from the backend's REST API.
 
 ## 🧠 What I Learned / Key Concepts
 
 - **React Fundamentals**: How components render and re-render based on state changes
 - **Components & JSX**: Breaking the UI into small, reusable pieces
 - **Props & State**: Passing data between components and managing local component state with `useState`
-- **REST APIs**: Understanding how CRUD operations map to standard API conventions (GET, POST, PUT, DELETE), even though this version uses Local Storage instead of a live backend
-- **Local Storage**: Persisting data on the client side without a database
+- **REST APIs**: Designing and consuming CRUD endpoints (GET, POST, PUT, DELETE) that connect the frontend to the backend
+- **Node.js/Express**: Setting up a server, defining routes, and handling requests/responses
 
 ## 🎤 Presentation Highlights
 
@@ -85,8 +106,8 @@ This project was also presented with a focus on:
 
 ## 🔮 Future Improvements
 
-- Connect to a real backend (Node.js + Express) with a database instead of Local Storage
-- Add form validation and error handling
+- Connect the backend to a persistent database (e.g. MongoDB or MySQL) instead of in-memory/file-based storage
+- Add form validation and error handling on both frontend and backend
 - Add pagination or sorting for larger student lists
 - Add authentication for admin-only access
 
