@@ -118,8 +118,8 @@ function App() {
 
             const newStudent = await response.json();
 
-            setStudents([
-                ...students,
+            setStudents(currentStudents => [
+                ...currentStudents,
                 newStudent
             ]);
 
@@ -162,8 +162,8 @@ function App() {
             }
         );
 
-        setStudents(
-            students.filter(student => student.id !== id)
+        setStudents(currentStudents =>
+            currentStudents.filter(student => student.id !== id)
         );
 
     };
