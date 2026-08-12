@@ -37,7 +37,7 @@ function StudentList({
 
                 {filteredStudents.length === 0 ? (
                     <p className="empty">
-                        No students found.
+                        No students found yet.
                     </p>
                 ) : (
                     filteredStudents.map(student => (
