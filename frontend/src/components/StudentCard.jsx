@@ -24,7 +24,7 @@ function StudentCard({ student, handleEdit, handleDelete }) {
                     className="edit-btn"
                     onClick={() => handleEdit(student)}
                 >
-                    Edit 
+                    Edit it
                 </button>
 
                 <button
