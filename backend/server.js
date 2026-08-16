@@ -1,37 +1,45 @@
 const express = require("express");
-const pool = require("./db");
+const Student = require("./models/Student");
 
 const app = express();
 
 app.use(express.json());
 
+
+// Home route
 app.get("/", (req, res) => {
     res.send("Student Management API is running");
 });
 
+
+// GET - Get all students
 app.get("/students", async (req, res) => {
     try {
-        const result = await pool.query("SELECT * FROM students");
+        const students = await Student.findAll();
 
-        res.json(result.rows);
+        res.json(students);
     } catch (error) {
         console.error(error);
+
         res.status(500).json({
             error: "Database error"
         });
     }
 });
 
+
+// POST - Add a student
 app.post("/students", async (req, res) => {
     try {
         const { name, department, year } = req.body;
 
-        const result = await pool.query(
-            "INSERT INTO students (name, department, year) VALUES ($1, $2, $3) RETURNING *",
-            [name, department, year]
-        );
+        const student = await Student.create({
+            name,
+            department,
+            year
+        });
 
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(student);
     } catch (error) {
         console.error(error);
 
@@ -41,26 +49,28 @@ app.post("/students", async (req, res) => {
     }
 });
 
+
+// PUT - Update a student
 app.put("/students/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const { name, department, year } = req.body;
 
-        const result = await pool.query(
-            `UPDATE students
-             SET name = $1, department = $2, year = $3
-             WHERE id = $4
-             RETURNING *`,
-            [name, department, year, id]
-        );
+        const student = await Student.findByPk(id);
 
-        if (result.rows.length === 0) {
+        if (!student) {
             return res.status(404).json({
                 error: "Student not found"
             });
         }
 
-        res.json(result.rows[0]);
+        await student.update({
+            name,
+            department,
+            year
+        });
+
+        res.json(student);
     } catch (error) {
         console.error(error);
 
@@ -70,24 +80,25 @@ app.put("/students/:id", async (req, res) => {
     }
 });
 
+
+// DELETE - Delete a student
 app.delete("/students/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
-        const result = await pool.query(
-            "DELETE FROM students WHERE id = $1 RETURNING *",
-            [id]
-        );
+        const student = await Student.findByPk(id);
 
-        if (result.rows.length === 0) {
+        if (!student) {
             return res.status(404).json({
                 error: "Student not found"
             });
         }
 
+        await student.destroy();
+
         res.json({
             message: "Student deleted successfully",
-            student: result.rows[0]
+            student: student
         });
     } catch (error) {
         console.error(error);
@@ -98,6 +109,8 @@ app.delete("/students/:id", async (req, res) => {
     }
 });
 
+
+// Start server
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
 });

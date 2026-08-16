@@ -16,6 +16,9 @@ const Student = sequelize.define("Student", {
         type: DataTypes.STRING,
         allowNull: false
     }
+}, {
+    tableName: "students",
+    timestamps: false
 });
 
 module.exports = Student;
