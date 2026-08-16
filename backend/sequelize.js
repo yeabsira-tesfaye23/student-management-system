@@ -1,24 +1,15 @@
 const { Sequelize } = require("sequelize");
+require("dotenv").config();
 
 const sequelize = new Sequelize(
-    "student_management",
-    "postgres",
-    "5490",
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
     {
-        host: "localhost",
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
         dialect: "postgres",
     }
 );
-
-async function testConnection() {
-    try {
-        await sequelize.authenticate();
-        console.log("PostgreSQL connected through Sequelize!");
-    } catch (error) {
-        console.error("Unable to connect:", error);
-    }
-}
-
-testConnection();
 
 module.exports = sequelize;
