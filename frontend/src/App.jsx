@@ -19,28 +19,9 @@ function App() {
 
     // Get students
     useEffect(() => {
+    fetchStudents();
+}, []);
 
-        const savedStudents = localStorage.getItem("students");
-
-        if (savedStudents) {
-            setStudents(JSON.parse(savedStudents));
-        } else {
-            fetchStudents();
-        }
-
-    }, []);
-
-    // Save students
-    useEffect(() => {
-
-        if (students.length > 0) {
-            localStorage.setItem(
-                "students",
-                JSON.stringify(students)
-            );
-        }
-
-    }, [students]);
 
     // Get students from backend
     const fetchStudents = async () => {
