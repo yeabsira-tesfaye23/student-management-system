@@ -1,0 +1,141 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Student management postman collections",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/students": {
+      "get": {
+        "summary": "Get method",
+        "responses": {}
+      },
+      "post": {
+        "summary": "Post method",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Postman Test",
+                "department": "Software Engineering",
+                "year": "2nd Year"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/11": {
+      "put": {
+        "summary": "Put method",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Postman Test",
+                "department": "Software Engineering",
+                "year": "3rd Year"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete method",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "Postman Test",
+                "department": "Software Engineering",
+                "year": "3rd Year"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/students/111": {
+      "get": {
+        "summary": "Get rigorous testing(404 error)",
+        "responses": {},
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "department": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "name": "",
+                "department": "Software Engineering",
+                "year": "3rd Year"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

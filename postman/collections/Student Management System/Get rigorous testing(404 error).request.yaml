@@ -1,0 +1,17 @@
+$kind: http-request
+name: Get rigorous testing(404 error)
+description: ""
+url: http://localhost:3000/students/111
+method: GET
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"\",\r
+
+    \    \"department\": \"Software Engineering\",\r
+
+    \    \"year\": \"3rd Year\"\r
+
+    }"
+order: 4445649194564934

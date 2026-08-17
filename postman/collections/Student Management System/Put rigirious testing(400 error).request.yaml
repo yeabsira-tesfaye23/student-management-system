@@ -1,0 +1,17 @@
+$kind: http-request
+name: Put rigirious testing(400 error)
+description: ""
+url: http://localhost:3000/students/11
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"\",\r
+
+    \    \"department\": \"Software Engineering\",\r
+
+    \    \"year\": \"3rd Year\"\r
+
+    }"
+order: 4394738201838855

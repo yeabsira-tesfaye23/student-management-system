@@ -1,0 +1,17 @@
+$kind: http-request
+name: Delete method
+description: ""
+url: http://localhost:3000/students/11
+method: DELETE
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Postman Test\",\r
+
+    \    \"department\": \"Software Engineering\",\r
+
+    \    \"year\": \"3rd Year\"\r
+
+    }"
+order: 4351183730372827

@@ -1,0 +1,17 @@
+$kind: http-request
+name: Post method
+description: ""
+url: http://localhost:3000/students
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Postman Test\",\r
+
+    \    \"department\": \"Software Engineering\",\r
+
+    \    \"year\": \"2nd Year\"\r
+
+    }"
+order: 57934290824702
