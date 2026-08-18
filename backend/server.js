@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const Student = require("./models/Student");
 const User = require("./models/User");
@@ -61,22 +62,19 @@ app.get("/", (req, res) => {
 });
 
 // ===============================
-// AUTHENTICATION
+// REGISTER
 // ===============================
 
-// Register
 app.post("/register", async (req, res, next) => {
     try {
         const { username, password, role } = req.body;
 
-        // Check required fields
         if (!username || !password) {
             return res.status(400).json({
                 error: "Username and password are required"
             });
         }
 
-        // Check types
         if (
             typeof username !== "string" ||
             typeof password !== "string"
@@ -86,7 +84,6 @@ app.post("/register", async (req, res, next) => {
             });
         }
 
-        // Check empty values
         if (
             username.trim() === "" ||
             password.trim() === ""
@@ -96,14 +93,12 @@ app.post("/register", async (req, res, next) => {
             });
         }
 
-        // Check password length
         if (password.length < 6) {
             return res.status(400).json({
                 error: "Password must be at least 6 characters"
             });
         }
 
-        // Check if username already exists
         const existingUser = await User.findOne({
             where: {
                 username: username.trim()
@@ -116,25 +111,91 @@ app.post("/register", async (req, res, next) => {
             });
         }
 
-        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Only allow valid roles
         const userRole =
             role === "admin" || role === "student"
                 ? role
                 : "student";
 
-        // Create user
         const user = await User.create({
             username: username.trim(),
             password: hashedPassword,
             role: userRole
         });
 
-        // Never send password back to client
         res.status(201).json({
             message: "User registered successfully",
+            user: {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+// ===============================
+// LOGIN
+// ===============================
+
+app.post("/login", async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+
+        // Check required fields
+        if (!username || !password) {
+            return res.status(400).json({
+                error: "Username and password are required"
+            });
+        }
+
+        // Find user
+        const user = await User.findOne({
+            where: {
+                username: username.trim()
+            }
+        });
+
+        // User doesn't exist
+        if (!user) {
+            return res.status(401).json({
+                error: "Invalid username or password"
+            });
+        }
+
+        // Compare password with hashed password
+        const passwordIsCorrect = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!passwordIsCorrect) {
+            return res.status(401).json({
+                error: "Invalid username or password"
+            });
+        }
+
+        // Create JWT
+        const token = jwt.sign(
+            {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1h"
+            }
+        );
+
+        // Send token
+        res.status(200).json({
+            message: "Login successful",
+            token,
             user: {
                 id: user.id,
                 username: user.username,
@@ -243,6 +304,7 @@ app.delete("/students/:id", async (req, res, next) => {
             message: "Student deleted successfully",
             student
         });
+
     } catch (error) {
         next(error);
     }
