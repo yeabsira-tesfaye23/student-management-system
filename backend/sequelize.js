@@ -13,12 +13,20 @@ const sequelize = new Sequelize(
     }
 );
 
-sequelize.authenticate()
-    .then(() => {
+const connectDatabase = async () => {
+    try {
+        await sequelize.authenticate();
+
         console.log("PostgreSQL connected through Sequelize!");
-    })
-    .catch((error) => {
+
+        await sequelize.sync();
+
+        console.log("Database tables synchronized successfully!");
+    } catch (error) {
         console.error("Unable to connect to PostgreSQL:", error);
-    });
+    }
+};
+
+connectDatabase();
 
 module.exports = sequelize;
