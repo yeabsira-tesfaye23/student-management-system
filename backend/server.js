@@ -1,10 +1,16 @@
 const express = require("express");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
+
 const Student = require("./models/Student");
+const User = require("./models/User");
 
 const app = express();
 
+// ===============================
 // Middleware
+// ===============================
+
 app.use(cors());
 app.use(express.json());
 
@@ -45,15 +51,105 @@ const validateStudent = (req, res, next) => {
 };
 
 // ===============================
-// Routes
+// Home
 // ===============================
 
-// Home
 app.get("/", (req, res) => {
     res.json({
         message: "Student Management API is running"
     });
 });
+
+// ===============================
+// AUTHENTICATION
+// ===============================
+
+// Register
+app.post("/register", async (req, res, next) => {
+    try {
+        const { username, password, role } = req.body;
+
+        // Check required fields
+        if (!username || !password) {
+            return res.status(400).json({
+                error: "Username and password are required"
+            });
+        }
+
+        // Check types
+        if (
+            typeof username !== "string" ||
+            typeof password !== "string"
+        ) {
+            return res.status(400).json({
+                error: "Username and password must be strings"
+            });
+        }
+
+        // Check empty values
+        if (
+            username.trim() === "" ||
+            password.trim() === ""
+        ) {
+            return res.status(400).json({
+                error: "Username and password cannot be empty"
+            });
+        }
+
+        // Check password length
+        if (password.length < 6) {
+            return res.status(400).json({
+                error: "Password must be at least 6 characters"
+            });
+        }
+
+        // Check if username already exists
+        const existingUser = await User.findOne({
+            where: {
+                username: username.trim()
+            }
+        });
+
+        if (existingUser) {
+            return res.status(409).json({
+                error: "Username already exists"
+            });
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Only allow valid roles
+        const userRole =
+            role === "admin" || role === "student"
+                ? role
+                : "student";
+
+        // Create user
+        const user = await User.create({
+            username: username.trim(),
+            password: hashedPassword,
+            role: userRole
+        });
+
+        // Never send password back to client
+        res.status(201).json({
+            message: "User registered successfully",
+            user: {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            }
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+// ===============================
+// STUDENT ROUTES
+// ===============================
 
 // GET all students
 app.get("/students", async (req, res, next) => {
@@ -159,7 +255,6 @@ app.delete("/students/:id", async (req, res, next) => {
 app.use((error, req, res, next) => {
     console.error(error);
 
-    // Sequelize validation error
     if (error.name === "SequelizeValidationError") {
         return res.status(400).json({
             error: "Validation error",
@@ -167,21 +262,25 @@ app.use((error, req, res, next) => {
         });
     }
 
-    // Sequelize database error
+    if (error.name === "SequelizeUniqueConstraintError") {
+        return res.status(409).json({
+            error: "Username already exists"
+        });
+    }
+
     if (error.name === "SequelizeDatabaseError") {
         return res.status(500).json({
             error: "Database error"
         });
     }
 
-    // General server error
     res.status(500).json({
         error: "Internal server error"
     });
 });
 
 // ===============================
-// Starting Server
+// Start Server
 // ===============================
 
 app.listen(3000, () => {
