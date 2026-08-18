@@ -181,7 +181,7 @@ app.use((error, req, res, next) => {
 });
 
 // ===============================
-// Start Server
+// Starting Server
 // ===============================
 
 app.listen(3000, () => {
