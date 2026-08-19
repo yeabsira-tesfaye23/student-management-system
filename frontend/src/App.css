@@ -12,7 +12,6 @@
     --primary-light: #eff6ff;
 
     --accent: #0f766e;
-    --accent-light: #ccfbf1;
 
     --danger: #dc2626;
     --danger-light: #fef2f2;
@@ -129,7 +128,7 @@ select {
 }
 
 /* ========================================
-   LOGIN PAGE
+   LOGIN
 ======================================== */
 
 .login-container {
@@ -157,8 +156,6 @@ select {
         #f1f5f9;
 }
 
-/* Vertical card */
-
 .login-card {
     width: 100%;
 
@@ -181,16 +178,18 @@ select {
 @keyframes loginAppear {
     from {
         opacity: 0;
-
         transform: translateY(12px);
     }
 
     to {
         opacity: 1;
-
         transform: translateY(0);
     }
 }
+
+/* ========================================
+   CUSTOM LOGO
+======================================== */
 
 .login-header {
     text-align: center;
@@ -203,6 +202,8 @@ select {
 
     height: 64px;
 
+    position: relative;
+
     display: flex;
 
     align-items: center;
@@ -211,13 +212,49 @@ select {
 
     margin: 0 auto 18px;
 
-    border-radius: 18px;
+    border-radius: 16px;
 
-    background: var(--primary-light);
+    background: #eff6ff;
 
     border: 1px solid #dbeafe;
 
-    font-size: 30px;
+    overflow: hidden;
+}
+
+/* Main geometric line */
+
+.logo-line {
+    width: 28px;
+
+    height: 28px;
+
+    display: block;
+
+    border: 4px solid var(--primary);
+
+    border-radius: 7px;
+
+    transform: rotate(45deg);
+}
+
+/* Small human-designed detail */
+
+.logo-dot {
+    position: absolute;
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--accent);
+
+    bottom: 15px;
+
+    right: 15px;
+
+    border: 2px solid white;
 }
 
 .login-header h1 {
@@ -240,7 +277,9 @@ select {
     font-size: 14px;
 }
 
-/* Login form */
+/* ========================================
+   LOGIN FORM
+======================================== */
 
 .login-form {
     display: flex;
@@ -297,7 +336,9 @@ select {
         0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
-/* Login error */
+/* ========================================
+   LOGIN ERROR
+======================================== */
 
 .login-error {
     padding: 11px 13px;
@@ -313,7 +354,9 @@ select {
     font-size: 14px;
 }
 
-/* Login button */
+/* ========================================
+   LOGIN BUTTON
+======================================== */
 
 .login-button {
     width: 100%;
@@ -334,10 +377,7 @@ select {
 
     cursor: pointer;
 
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: 0.2s ease;
 }
 
 .login-button:hover {
@@ -396,7 +436,7 @@ select {
 }
 
 /* ========================================
-   FORM
+   STUDENT FORM
 ======================================== */
 
 form:not(.login-form) {
@@ -581,7 +621,7 @@ form:not(.login-form) button:hover {
 }
 
 /* ========================================
-   ACTION BUTTONS
+   ACTIONS
 ======================================== */
 
 .actions {
@@ -645,7 +685,7 @@ form:not(.login-form) button:hover {
 }
 
 /* ========================================
-   FOCUS ACCESSIBILITY
+   ACCESSIBILITY
 ======================================== */
 
 button:focus-visible,
@@ -725,4 +765,95 @@ select:focus-visible {
     .login-header h1 {
         font-size: 22px;
     }
+}
+/* ========================================
+   PASSWORD REQUIREMENTS
+======================================== */
+
+.password-requirements {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 12px 14px;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+
+    border: 1px solid var(--border);
+
+    font-size: 13px;
+
+    color: var(--text-secondary);
+}
+
+.password-requirements p {
+    margin: 0 0 3px;
+
+    color: var(--text-primary);
+
+    font-weight: 600;
+}
+
+
+/* ========================================
+   SUCCESS MESSAGE
+======================================== */
+
+.login-success {
+    padding: 11px 13px;
+
+    border-radius: var(--radius-sm);
+
+    border: 1px solid #a7f3d0;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    font-size: 14px;
+}
+
+
+/* ========================================
+   LOGIN / REGISTER SWITCH
+======================================== */
+
+.auth-switch {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 22px;
+
+    font-size: 14px;
+
+    color: var(--text-secondary);
+}
+
+.auth-switch button {
+    border: none;
+
+    padding: 0;
+
+    background: transparent;
+
+    color: var(--primary);
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.auth-switch button:hover {
+    color: var(--primary-dark);
+
+    text-decoration: underline;
 }
