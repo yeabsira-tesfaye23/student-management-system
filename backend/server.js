@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const Student = require("./models/Student");
 const User = require("./models/User");
 const authenticateToken = require("./middleware/authMiddleware");
+const authorizeRole = require("./middleware/authorizeRole");
 const app = express();
 
 // ===============================
@@ -243,7 +244,12 @@ app.get("/students/:id",authenticateToken, async (req, res, next) => {
 });
 
 // POST - add student
-app.post("/students", authenticateToken, validateStudent, async (req, res, next) => {
+app.post(
+    "/students",
+    authenticateToken,
+    authorizeRole("admin"),
+    validateStudent,
+    async (req, res, next) => {
     try {
         const { name, department, year } = req.body;
 
@@ -260,7 +266,12 @@ app.post("/students", authenticateToken, validateStudent, async (req, res, next)
 });
 
 // PUT - update student
-app.put("/students/:id", authenticateToken, validateStudent, async (req, res, next) => {
+app.put(
+    "/students/:id", 
+    authenticateToken,
+    authorizeRole("admin"),
+     validateStudent, 
+     async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, department, year } = req.body;
@@ -286,7 +297,11 @@ app.put("/students/:id", authenticateToken, validateStudent, async (req, res, ne
 });
 
 // DELETE - delete student
-app.delete("/students/:id", authenticateToken, async (req, res, next) => {
+app.delete(
+    "/students/:id", 
+    authenticateToken,
+    authorizeRole("admin"), 
+    async (req, res, next) => {
     try {
         const { id } = req.params;
 

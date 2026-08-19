@@ -3,8 +3,13 @@ function StudentForm({
     editingId,
     handleChange,
     handleSubmit,
-    cancelEdit
+    cancelEdit,
+    isAdmin
 }) {
+    if (!isAdmin) {
+        return null;
+    }
+
     return (
         <section className="form-section">
             <h2>
@@ -12,7 +17,6 @@ function StudentForm({
             </h2>
 
             <form onSubmit={handleSubmit}>
-
                 <input
                     type="text"
                     name="name"
@@ -55,7 +59,6 @@ function StudentForm({
                         Cancel
                     </button>
                 )}
-
             </form>
         </section>
     );

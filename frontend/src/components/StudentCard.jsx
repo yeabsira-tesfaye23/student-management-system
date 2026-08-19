@@ -1,4 +1,9 @@
-function StudentCard({ student, handleEdit, handleDelete }) {
+function StudentCard({
+    student,
+    handleEdit,
+    handleDelete,
+    isAdmin
+}) {
     return (
         <div className="student-card">
 
@@ -18,23 +23,25 @@ function StudentCard({ student, handleEdit, handleDelete }) {
 
             </div>
 
-            <div className="actions">
+            {isAdmin && (
+                <div className="actions">
 
-                <button
-                    className="edit-btn"
-                    onClick={() => handleEdit(student)}
-                >
-                    Edit it
-                </button>
+                    <button
+                        className="edit-btn"
+                        onClick={() => handleEdit(student)}
+                    >
+                        Edit it
+                    </button>
 
-                <button
-                    className="delete-btn"
-                    onClick={() => handleDelete(student.id)}
-                >
-                    Delete
-                </button>
+                    <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(student.id)}
+                    >
+                        Delete
+                    </button>
 
-            </div>
+                </div>
+            )}
 
         </div>
     );

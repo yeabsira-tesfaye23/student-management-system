@@ -5,7 +5,8 @@ function StudentList({
     search,
     setSearch,
     handleEdit,
-    handleDelete
+    handleDelete,
+    isAdmin
 }) {
     const filteredStudents = students.filter(student =>
         student.name.toLowerCase().includes(search.toLowerCase())
@@ -18,7 +19,10 @@ function StudentList({
 
                 <div>
                     <h2>Students</h2>
-                    <p>{students.length} students registered</p>
+
+                    <p>
+                        {students.length} students registered
+                    </p>
                 </div>
 
                 <input
@@ -46,6 +50,7 @@ function StudentList({
                             student={student}
                             handleEdit={handleEdit}
                             handleDelete={handleDelete}
+                            isAdmin={isAdmin}
                         />
                     ))
                 )}

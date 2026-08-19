@@ -1,10 +1,25 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+import Login from "./components/Login";
 import StudentForm from "./components/StudentForm";
 import StudentList from "./components/StudentList";
 
+import {
+    getStudents,
+    addStudent,
+    updateStudent,
+    deleteStudent
+} from "./api";
+
 function App() {
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("user");
+
+        return savedUser
+            ? JSON.parse(savedUser)
+            : null;
+    });
 
     const [students, setStudents] = useState([]);
     const [search, setSearch] = useState("");
@@ -17,37 +32,67 @@ function App() {
 
     const [editingId, setEditingId] = useState(null);
 
-    // Get students
+    const isAdmin = user?.role === "admin";
+
+    // ===============================
+    // Load students
+    // ===============================
+
     useEffect(() => {
-    fetchStudents();
-}, []);
+        if (!user) return;
 
+        const loadStudents = async () => {
+            try {
+                const data = await getStudents();
 
-    // Get students from backend
-    const fetchStudents = async () => {
+                setStudents(data);
+            } catch (error) {
+                console.error(
+                    "Failed to load students:",
+                    error
+                );
+            }
+        };
 
-        const response = await fetch(
-            "http://localhost:3000/students"
-        );
+        loadStudents();
+    }, [user]);
 
-        const data = await response.json();
+    // ===============================
+    // Login
+    // ===============================
 
-        setStudents(data);
+    const handleLogin = (userData) => {
+        setUser(userData);
     };
 
-    // Handle input changes
-    const handleChange = (event) => {
+    // ===============================
+    // Logout
+    // ===============================
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        setUser(null);
+        setStudents([]);
+    };
+
+    // ===============================
+    // Handle input changes
+    // ===============================
+
+    const handleChange = (event) => {
         setForm({
             ...form,
             [event.target.name]: event.target.value
         });
-
     };
 
+    // ===============================
     // Add or edit student
-    const handleSubmit = async (event) => {
+    // ===============================
 
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!form.name || !form.department || !form.year) {
@@ -55,68 +100,47 @@ function App() {
             return;
         }
 
-        // EDIT
-        if (editingId) {
+        try {
+            if (editingId) {
+                const updatedStudent = await updateStudent(
+                    editingId,
+                    form
+                );
 
-            const response = await fetch(
-                `http://localhost:3000/students/${editingId}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(form)
-                }
-            );
+                setStudents(currentStudents =>
+                    currentStudents.map(student =>
+                        student.id === editingId
+                            ? updatedStudent
+                            : student
+                    )
+                );
 
-            const updatedStudent = await response.json();
+                setEditingId(null);
+            } else {
+                const newStudent = await addStudent(form);
 
-            setStudents(
-                students.map(student =>
-                    student.id === editingId
-                        ? updatedStudent
-                        : student
-                )
-            );
+                setStudents(currentStudents => [
+                    ...currentStudents,
+                    newStudent
+                ]);
+            }
 
-            setEditingId(null);
+            setForm({
+                name: "",
+                department: "",
+                year: ""
+            });
 
+        } catch (error) {
+            alert(error.message);
         }
-
-        // ADD
-        else {
-
-            const response = await fetch(
-                "http://localhost:3000/students",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(form)
-                }
-            );
-
-            const newStudent = await response.json();
-
-            setStudents(currentStudents => [
-                ...currentStudents,
-                newStudent
-            ]);
-
-        }
-
-        setForm({
-            name: "",
-            department: "",
-            year: ""
-        });
-
     };
 
+    // ===============================
     // Start editing
-    const handleEdit = (student) => {
+    // ===============================
 
+    const handleEdit = (student) => {
         setEditingId(student.id);
 
         setForm({
@@ -124,34 +148,37 @@ function App() {
             department: student.department,
             year: student.year
         });
-
     };
 
+    // ===============================
     // Delete student
-    const handleDelete = async (id) => {
+    // ===============================
 
+    const handleDelete = async (id) => {
         const confirmDelete = window.confirm(
             "Are you sure you want to delete this student?"
         );
 
         if (!confirmDelete) return;
 
-        await fetch(
-            `http://localhost:3000/students/${id}`,
-            {
-                method: "DELETE"
-            }
-        );
+        try {
+            await deleteStudent(id);
 
-        setStudents(currentStudents =>
-            currentStudents.filter(student => student.id !== id)
-        );
-
+            setStudents(currentStudents =>
+                currentStudents.filter(
+                    student => student.id !== id
+                )
+            );
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
+    // ===============================
     // Cancel editing
-    const cancelEdit = () => {
+    // ===============================
 
+    const cancelEdit = () => {
         setEditingId(null);
 
         setForm({
@@ -159,8 +186,19 @@ function App() {
             department: "",
             year: ""
         });
-
     };
+
+    // ===============================
+    // Show login
+    // ===============================
+
+    if (!user) {
+        return <Login onLogin={handleLogin} />;
+    }
+
+    // ===============================
+    // Student Management UI
+    // ===============================
 
     return (
         <div className="app">
@@ -169,9 +207,20 @@ function App() {
 
                 <div>
                     <h1>Student Management</h1>
+
                     <p>
                         Manage student information easily
                     </p>
+
+                    <p>
+                        Logged in as:{" "}
+                        <strong>{user.username}</strong>{" "}
+                        ({user.role})
+                    </p>
+
+                    <button onClick={handleLogout}>
+                        Logout
+                    </button>
                 </div>
 
             </header>
@@ -184,6 +233,7 @@ function App() {
                     handleChange={handleChange}
                     handleSubmit={handleSubmit}
                     cancelEdit={cancelEdit}
+                    isAdmin={isAdmin}
                 />
 
                 <StudentList
@@ -192,6 +242,7 @@ function App() {
                     setSearch={setSearch}
                     handleEdit={handleEdit}
                     handleDelete={handleDelete}
+                    isAdmin={isAdmin}
                 />
 
             </main>
