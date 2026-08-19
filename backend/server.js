@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const Student = require("./models/Student");
 const User = require("./models/User");
-
+const authenticateToken = require("./middleware/authMiddleware");
 const app = express();
 
 // ===============================
@@ -213,7 +213,7 @@ app.post("/login", async (req, res, next) => {
 // ===============================
 
 // GET all students
-app.get("/students", async (req, res, next) => {
+app.get("/students", authenticateToken, async (req, res, next) => {
     try {
         const students = await Student.findAll();
 
@@ -224,7 +224,7 @@ app.get("/students", async (req, res, next) => {
 });
 
 // GET student by ID
-app.get("/students/:id", async (req, res, next) => {
+app.get("/students/:id",authenticateToken, async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -243,7 +243,7 @@ app.get("/students/:id", async (req, res, next) => {
 });
 
 // POST - add student
-app.post("/students", validateStudent, async (req, res, next) => {
+app.post("/students", authenticateToken, validateStudent, async (req, res, next) => {
     try {
         const { name, department, year } = req.body;
 
@@ -260,7 +260,7 @@ app.post("/students", validateStudent, async (req, res, next) => {
 });
 
 // PUT - update student
-app.put("/students/:id", validateStudent, async (req, res, next) => {
+app.put("/students/:id", authenticateToken, validateStudent, async (req, res, next) => {
     try {
         const { id } = req.params;
         const { name, department, year } = req.body;
@@ -286,7 +286,7 @@ app.put("/students/:id", validateStudent, async (req, res, next) => {
 });
 
 // DELETE - delete student
-app.delete("/students/:id", async (req, res, next) => {
+app.delete("/students/:id", authenticateToken, async (req, res, next) => {
     try {
         const { id } = req.params;
 
